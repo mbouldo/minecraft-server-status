@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../dist/output.css" rel="stylesheet">
+</head>
+<body class="main">
+    <div class="center-container">
+        <img src="../dist/img/block.png" class="h-36 w-36" id="server-icon"/>
+        <div class="flex flex-col ">
+            <h1 class="text-7xl font-medium text-white-800 mb-5" id="server-ip">play.myserver.com</h1>
+            <span class="text-gray-300 text-lg mb-3 server-online" id="motd">A beautiful minecraft server</span>
+            <div class=" text-3xl"><span class="font-semibold server-status" id="player-count">00</span> Players Online</div>
+        </div>
+    </div>
+<script>
+function initServerData(serverIp,serverPort){
+    const serverIpElement = document.getElementById('server-ip');
+    serverIpElement.innerHTML = serverIp;
+
+    console.log('https://mcapi.us/server/status?ip='+serverIp+'&port='+serverPort);
+    fetch('https://mcapi.us/server/status?ip='+serverIp+'&port='+serverPort)
+    .then(response => response.json())
+    .then(data => handleServerStatus(data));
+
+    function handleServerStatus(data){
+        if(data.status=='error'){
+            console.log(data.error);
+            return false;
+        }
+
+        const motd = document.getElementById("motd");
+        motd.innerHTML = data.motd;
+
+        const playerCounter = document.getElementById("player-count");
+        playerCounter.innerHTML = data.players.now;
+
+        const logo = document.getElementById("server-icon");
+        logo.src = data.favicon;
+    } 
+
+}
+
+initServerData("play.dawn-mc.net","25565");
+
+</script>
+
+
+</body>
+</html>
